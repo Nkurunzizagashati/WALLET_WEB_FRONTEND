@@ -4,11 +4,11 @@ This is a simple React-based Wallet Web Application designed to help users manag
 
 ## Features
 
--   **User Authentication**: Login and register pages for user access.
--   **Budget Management**: Create budgets for various categories and track progress.
--   **Transaction Management**: Add, edit, and delete transactions.
--   **Reports**: Visual summaries and reports of income and expenses.
--   **Protected Routes**: Only authenticated users can access certain routes.
+-   **User Authentication**
+-   **Budget Management**
+-   **Transaction Management**
+-   **Reports**
+-   **Protected Routes**
 
 ## Technologies Used
 
