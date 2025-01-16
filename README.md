@@ -33,7 +33,6 @@ This is a simple React-based Wallet Web Application designed to help users manag
 
     ```bash
     git clone https://github.com/Nkurunzizagashati/WALLET_WEB_FRONTEND
-    cd wallet-web-app
     ```
 
 2. Install dependencies:
@@ -48,19 +47,7 @@ This is a simple React-based Wallet Web Application designed to help users manag
     yarn install
     ```
 
-3. Run the development server:
-
-    ```bash
-    npm start
-    ```
-
-    or with Yarn:
-
-    ```bash
-    yarn start
-    ```
-
-4. Open the app in your browser at by runing.
+3. Open the app in your browser at by runing.
 
 ```bash
     npm run dev
