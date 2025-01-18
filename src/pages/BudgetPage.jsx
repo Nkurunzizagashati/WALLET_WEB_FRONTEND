@@ -1,86 +1,108 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Aside from '../components/Aside';
 import Navbar from '../components/Navbar';
 import { useState } from 'react';
+import { addIncome, addExpense } from '../redux/actions';
+
+import {
+	addIncomeSuccess,
+	addIncomeFailure,
+	addIncomeStart,
+} from '../redux/incomeSlice';
+
+import {
+	addExpenseSuccess,
+	addExpenseFailure,
+} from '../redux/ExpenseSlice';
+import toast from 'react-hot-toast';
 
 const BudgetPage = () => {
+	const dispatch = useDispatch();
+
 	const { showNavLinkTexts } = useSelector(
 		(state) => state.navLinkTexts
 	);
 
-	// Sample predefined categories for selection
-	const predefinedCategories = [
-		'Groceries',
-		'Entertainment',
-		'Bills',
-		'Transport',
-		'Savings',
-		'Healthcare',
-	];
+	const expenses = useSelector((state) => state.expenses.data || []);
+	const incomes = useSelector((state) => state.incomes.data || []);
+	const { categories } = useSelector((state) => state.categories);
 
-	const [budgets, setBudgets] = useState([]); // Budget list
 	const [newBudget, setNewBudget] = useState({
-		name: '',
+		expense: '',
 		amount: '',
-		selectedCategories: [], // For selected categories
+		categoryId: '',
+	});
+	const [newIncome, setNewIncome] = useState({
+		income: '',
+		amount: '',
 	});
 
+	// Handle input changes for new income
+	const handleIncomeInputChange = (e) => {
+		const { name, value } = e.target;
+		setNewIncome({ ...newIncome, [name]: value });
+	};
+
+	// Handle input changes for budget
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setNewBudget({ ...newBudget, [name]: value });
 	};
 
-	const handleCategoryChange = (e) => {
-		const { value } = e.target;
-		// Add or remove the category from selected categories
-		setNewBudget((prevBudget) => {
-			const updatedCategories =
-				prevBudget.selectedCategories.includes(value)
-					? prevBudget.selectedCategories.filter(
-							(cat) => cat !== value
-					  )
-					: [...prevBudget.selectedCategories, value];
-			return {
-				...prevBudget,
-				selectedCategories: updatedCategories,
-			};
-		});
-	};
-
-	const addBudget = () => {
-		if (
-			newBudget.name &&
-			newBudget.amount &&
-			newBudget.selectedCategories.length > 0
-		) {
-			setBudgets([...budgets, newBudget]);
-			setNewBudget({
-				name: '',
-				amount: '',
-				selectedCategories: [],
-			}); // Clear form
-		} else {
-			alert('Please fill in all fields and select categories');
+	const addNewIncome = async () => {
+		try {
+			dispatch(addIncomeStart());
+			const response = await addIncome({ ...newIncome });
+			dispatch(addIncomeSuccess(response));
+			toast.success(response.message, {
+				duration: 3000,
+				position: 'top-right',
+			});
+		} catch (error) {
+			const errorMessage =
+				error.message || 'Failed to add income';
+			dispatch(addIncomeFailure(errorMessage));
+			toast.error(errorMessage, {
+				duration: 3000,
+				position: 'top-right',
+			});
 		}
 	};
 
-	// Calculate the overall progress and category-wise progress
-	const calculateOverallProgress = () => {
-		const totalBudget = budgets.reduce(
-			(acc, budget) => acc + parseFloat(budget.amount),
-			0
-		);
-		const totalSpent = budgets.reduce(
-			(acc, budget) =>
-				acc +
-				budget.selectedCategories.reduce(
-					(accCat, cat) => accCat + 50, // Simulating a random amount spent per category
-					0
-				),
-			0
-		);
-		return (totalSpent / totalBudget) * 100;
+	const addNewExpense = async () => {
+		try {
+			const response = await addExpense({ ...newBudget });
+			dispatch(addExpenseSuccess(response));
+			toast.success(response.message, {
+				duration: 3000,
+				position: 'top-right',
+			});
+		} catch (error) {
+			const errorMessage =
+				error.message || 'Failed to add expense';
+			dispatch(addExpenseFailure(errorMessage));
+			toast.error(errorMessage, {
+				duration: 3000,
+				position: 'top-right',
+			});
+		}
 	};
+
+	// Calculate progress for overall budget
+	const calculateOverallProgress = () => {
+		const totalBudget = expenses.reduce(
+			(acc, budget) => acc + parseFloat(budget.amount || 0),
+			0
+		);
+		const totalSpent = expenses.reduce(
+			(acc, expense) => acc + parseFloat(expense.amount || 0),
+			0
+		);
+
+		return totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+	};
+
+	console.log('CATEGORIES:  ', categories);
 
 	return (
 		<div className="h-screen">
@@ -100,7 +122,50 @@ const BudgetPage = () => {
 						Budget Management
 					</h1>
 
-					{/* Budget Form */}
+					<div className="mb-6 bg-white shadow rounded p-4">
+						<h2 className="text-xl font-semibold mb-4">
+							Add Income Sources
+						</h2>
+						<div className="flex space-x-4">
+							<input
+								type="text"
+								name="income"
+								value={newIncome.source}
+								onChange={handleIncomeInputChange}
+								placeholder="Income Source"
+								className="border border-gray-300 p-2 rounded w-full"
+							/>
+							<input
+								type="number"
+								name="amount"
+								value={newIncome.amount}
+								onChange={handleIncomeInputChange}
+								placeholder="Income Amount"
+								className="border border-gray-300 p-2 rounded w-full"
+							/>
+							<button
+								onClick={() => addNewIncome()}
+								className="bg-primary text-white px-4 py-2 rounded hover:bg-blue-500"
+							>
+								Add
+							</button>
+						</div>
+
+						{incomes.length > 0 && (
+							<ul className="mt-4 space-y-2">
+								{incomes.map((income, index) => (
+									<li
+										key={index}
+										className="flex justify-between p-2 bg-gray-100 rounded"
+									>
+										<span>{income.source}</span>
+										<span>{income.amount} RWF</span>
+									</li>
+								))}
+							</ul>
+						)}
+					</div>
+
 					<div className="mb-6 bg-white shadow rounded p-4">
 						<h2 className="text-xl font-semibold mb-4">
 							Add New Budget
@@ -108,8 +173,8 @@ const BudgetPage = () => {
 						<div className="flex space-x-4">
 							<input
 								type="text"
-								name="name"
-								value={newBudget.name}
+								name="expense"
+								value={newBudget.expense}
 								onChange={handleInputChange}
 								placeholder="Budget Name"
 								className="border border-gray-300 p-2 rounded w-full"
@@ -122,115 +187,36 @@ const BudgetPage = () => {
 								placeholder="Budget Amount"
 								className="border border-gray-300 p-2 rounded w-full"
 							/>
+
+							<select
+								name="categoryId"
+								value={newBudget.categoryId}
+								onChange={handleInputChange}
+								className="w-full border rounded-md p-2"
+								required
+							>
+								<option value="" disabled>
+									Select a category
+								</option>
+								{categories?.map((category, index) => (
+									<option
+										key={index}
+										value={category?._id}
+									>
+										{category?.name}
+									</option>
+								))}
+							</select>
+
 							<button
-								onClick={addBudget}
-								className="bg-blue-600 text-white px-4 py-2 rounded"
+								onClick={() => addNewExpense()}
+								className="bg-primary text-white px-4 py-2 rounded hover:bg-blue-500"
 							>
 								Add
 							</button>
 						</div>
-
-						{/* Categories Selection */}
-						<div className="mt-6">
-							<h3 className="font-semibold text-lg">
-								Select Categories
-							</h3>
-							<div className="space-y-2 mt-4">
-								{predefinedCategories.map(
-									(category, index) => (
-										<div
-											key={index}
-											className="flex items-center"
-										>
-											<input
-												type="checkbox"
-												value={category}
-												checked={newBudget.selectedCategories.includes(
-													category
-												)}
-												onChange={
-													handleCategoryChange
-												}
-												className="mr-2"
-											/>
-											<span>{category}</span>
-										</div>
-									)
-								)}
-							</div>
-						</div>
 					</div>
 
-					{/* Budget List */}
-					<div className="bg-white shadow rounded p-4">
-						<h2 className="text-xl font-semibold mb-4">
-							Budgets
-						</h2>
-						{budgets.length > 0 ? (
-							<ul className="space-y-2">
-								{budgets.map((budget, index) => {
-									// Simulating budget progress per category
-									const categoryProgress =
-										budget.selectedCategories
-											.length * 20; // Just for demonstration
-
-									return (
-										<li
-											key={index}
-											className="bg-white p-4 rounded shadow-md"
-										>
-											<h3 className="text-lg font-semibold text-dark-text">
-												{budget.name}
-											</h3>
-											<p>
-												Total Budget:{' '}
-												{budget.amount} RWF
-											</p>
-											<div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-												<div
-													className="bg-blue-600 h-2.5 rounded-full"
-													style={{
-														width: `${categoryProgress}%`,
-													}}
-												></div>
-											</div>
-											<ul className="space-y-2 mt-4">
-												{budget.selectedCategories.map(
-													(
-														category,
-														catIndex
-													) => (
-														<li
-															key={
-																catIndex
-															}
-															className="flex justify-between"
-														>
-															<span>
-																{
-																	category
-																}
-															</span>
-															<span>
-																50 RWF
-															</span>{' '}
-															{/* Placeholder for the amount spent */}
-														</li>
-													)
-												)}
-											</ul>
-										</li>
-									);
-								})}
-							</ul>
-						) : (
-							<p className="text-gray-500">
-								No budgets added yet.
-							</p>
-						)}
-					</div>
-
-					{/* Overall Budget Progress */}
 					<div className="mt-6 bg-white p-4 rounded shadow-md">
 						<h2 className="text-xl font-semibold mb-4">
 							Overall Budget Progress
