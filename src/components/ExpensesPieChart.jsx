@@ -5,30 +5,31 @@ import {
 	Tooltip,
 	Legend,
 } from 'chart.js';
+import { useSelector } from 'react-redux';
 
 // Register the chart elements
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ExpensesPieChart = () => {
-	// Hardcoded expenses data
-	const expenses = [
-		{ category: 'Food', amount: 150 },
-		{ category: 'Transport', amount: 100 },
-		{ category: 'Entertainment', amount: 50 },
-		{ category: 'Utilities', amount: 75 },
-		{ category: 'Rent', amount: 500 },
-		{ category: 'Healthcare', amount: 125 },
-	];
+	const { transactions } = useSelector((state) => state.transactions);
+	console.log('IN THE PIECHART TRANSACTIONS:', transactions);
 
+	// Filter expenses from transactions
+	const expenses = transactions.filter(
+		(transaction) => transaction.transactionType === 'Expense'
+	);
+	console.log('EXPENSES: ', expenses);
 	// Grouping expenses by category
 	const expensesByCategory = expenses.reduce((acc, expense) => {
-		if (acc[expense.category]) {
-			acc[expense.category] += expense.amount;
+		if (acc[expense.categoryId.name]) {
+			acc[expense.categoryId.name] += expense.amount;
 		} else {
-			acc[expense.category] = expense.amount;
+			acc[expense.categoryId.name] = expense.amount;
 		}
 		return acc;
 	}, {});
+
+	console.log(expensesByCategory);
 
 	// Getting labels and values for the chart
 	const labels = Object.keys(expensesByCategory);
