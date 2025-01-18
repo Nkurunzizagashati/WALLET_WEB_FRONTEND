@@ -24,7 +24,10 @@ import {
 	fetchIncomeStart,
 	fetchIncomeSuccess,
 } from './redux/incomeSlice';
-import { fetchExpenseFailure, fetchExpenseSuccess } from '../expense';
+import {
+	fetchExpenseFailure,
+	fetchExpenseSuccess,
+} from './redux/ExpenseSlice';
 import { fetchExpenseStart } from './redux/ExpenseSlice';
 
 const callFetchExpenses = async (dispatch) => {
