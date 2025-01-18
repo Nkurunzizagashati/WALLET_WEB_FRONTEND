@@ -15,16 +15,16 @@ const ExpensesPieChart = () => {
 	console.log('IN THE PIECHART TRANSACTIONS:', transactions);
 
 	// Filter expenses from transactions
-	const expenses = transactions.filter(
-		(transaction) => transaction.transactionType === 'Expense'
+	const expenses = transactions?.filter(
+		(transaction) => transaction?.transactionType === 'Expense'
 	);
 	console.log('EXPENSES: ', expenses);
 	// Grouping expenses by category
 	const expensesByCategory = expenses.reduce((acc, expense) => {
-		if (acc[expense.categoryId.name]) {
-			acc[expense.categoryId.name] += expense.amount;
+		if (acc[expense?.categoryId?.name]) {
+			acc[expense?.categoryId?.name] += expense?.amount;
 		} else {
-			acc[expense.categoryId.name] = expense.amount;
+			acc[expense?.categoryId?.name] = expense?.amount;
 		}
 		return acc;
 	}, {});
