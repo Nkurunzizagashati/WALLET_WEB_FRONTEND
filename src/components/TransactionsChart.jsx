@@ -9,6 +9,7 @@ import {
 	Tooltip,
 	Legend,
 } from 'chart.js';
+import { useSelector } from 'react-redux';
 
 // Register chart elements
 ChartJS.register(
@@ -22,21 +23,15 @@ ChartJS.register(
 );
 
 const TransactionsChart = () => {
-	// Hardcoded expenses and income data
-	const expenses = [
-		{ date: '2025-01-03', amount: 50 },
-		{ date: '2025-01-08', amount: 70 },
-		{ date: '2025-01-15', amount: 30 },
-		{ date: '2025-01-21', amount: 40 },
-		{ date: '2025-01-28', amount: 60 },
-	];
-	const income = [
-		{ date: '2025-01-02', amount: 100 },
-		{ date: '2025-01-10', amount: 120 },
-		{ date: '2025-01-18', amount: 80 },
-		{ date: '2025-01-25', amount: 110 },
-		{ date: '2025-01-29', amount: 90 },
-	];
+	const { transactions } = useSelector((state) => state.transactions);
+
+	// Filter transactions by type
+	const expenses = transactions.filter(
+		(transaction) => transaction.transactionType === 'Expense'
+	);
+	const income = transactions.filter(
+		(transaction) => transaction.transactionType === 'Income'
+	);
 
 	// Group data by weeks
 	const groupByWeek = (data) => {
@@ -65,13 +60,13 @@ const TransactionsChart = () => {
 		labels: ['1st week', '2nd week', '3rd week', '4th week'],
 		datasets: [
 			{
-				label: 'Expenses($)',
+				label: 'Expenses (RWF)',
 				data: Object.values(weeklyExpenses),
 				borderColor: 'red',
 				borderWidth: 1,
 			},
 			{
-				label: 'Income($)',
+				label: 'Income (RWF)',
 				data: Object.values(weeklyIncome),
 				borderColor: 'green',
 				borderWidth: 1,
@@ -89,7 +84,7 @@ const TransactionsChart = () => {
 			},
 			title: {
 				display: true,
-				text: 'Monthly Expenses and Incomes',
+				text: 'Monthly Expenses and Income',
 			},
 		},
 	};
