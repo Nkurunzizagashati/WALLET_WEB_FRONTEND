@@ -20,7 +20,7 @@ const ExpensesPieChart = () => {
 	);
 	console.log('EXPENSES: ', expenses);
 	// Grouping expenses by category
-	const expensesByCategory = expenses.reduce((acc, expense) => {
+	const expensesByCategory = expenses?.reduce((acc, expense) => {
 		if (acc[expense?.categoryId?.name]) {
 			acc[expense?.categoryId?.name] += expense?.amount;
 		} else {
