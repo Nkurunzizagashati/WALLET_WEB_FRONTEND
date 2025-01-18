@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createAccount, deleteAccount } from '../redux/actions';
+import {
+	createAccount,
+	deleteAccount,
+	triggerFetchNewDataFromDB,
+} from '../redux/actions';
 import {
 	createAccountFailure,
 	createAccountStart,
@@ -40,6 +44,9 @@ const AccountSettings = () => {
 			setAccountType('');
 			setInitialBalance('');
 			toast.success('Account created successfully!');
+
+			// trigger data fetch
+			triggerFetchNewDataFromDB(dispatch);
 		} catch (error) {
 			dispatch(createAccountFailure(error.message));
 			console.error('Error creating account:', error);
@@ -61,6 +68,9 @@ const AccountSettings = () => {
 			await deleteAccount(accountId);
 			dispatch(deleteAccountSuccess(accountId));
 			toast.success('Account deleted successfully!');
+
+			// trigger data fetch
+			triggerFetchNewDataFromDB(dispatch);
 		} catch (error) {
 			dispatch(deleteAccountFailure(error.message));
 			toast.error(error.message || 'Failed to delete account');

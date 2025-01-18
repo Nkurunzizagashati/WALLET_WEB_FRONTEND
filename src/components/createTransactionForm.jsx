@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createTransaction } from '../redux/actions';
+import {
+	createTransaction,
+	triggerFetchNewDataFromDB,
+} from '../redux/actions';
 import {
 	addTransactionFailure,
 	addTransactionStart,
@@ -44,6 +47,9 @@ const CreateTransactionForm = () => {
 				duration: 2000,
 				position: 'top-right',
 			});
+
+			// trigger data fetch
+			triggerFetchNewDataFromDB(dispatch);
 
 			setIsModalOpen(false);
 			setFormData({
@@ -159,7 +165,7 @@ const CreateTransactionForm = () => {
 										(category, index) => (
 											<option
 												key={index}
-												value={category._id}
+												value={category?._id}
 											>
 												{category?.name}
 												{category?.parentCategoryId &&

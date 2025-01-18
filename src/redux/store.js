@@ -6,6 +6,7 @@ import accountsReducer from './accountSlice';
 import navLinkTextsReducer from './navLinkTextsSlice';
 import incomeReducer from './incomeSlice';
 import expenseReducer from './ExpenseSlice';
+import fetchNewDataReducer from './fetchNewData';
 
 const store = configureStore({
 	reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
 		navLinkTexts: navLinkTextsReducer,
 		expenses: expenseReducer,
 		incomes: incomeReducer,
+		fetch: fetchNewDataReducer,
 	},
 });
 

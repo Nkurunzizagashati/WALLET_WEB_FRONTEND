@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCategory, deleteCategory } from '../redux/actions';
+import {
+	createCategory,
+	deleteCategory,
+	triggerFetchNewDataFromDB,
+} from '../redux/actions';
 import {
 	createCategoryFailure,
 	createCategoryStart,
@@ -9,6 +13,7 @@ import {
 	deleteCategoryStart,
 	deleteCategorySuccess,
 } from '../redux/categorySlice';
+import toast from 'react-hot-toast';
 
 const CategorySettings = () => {
 	const dispatch = useDispatch();
@@ -22,13 +27,16 @@ const CategorySettings = () => {
 		try {
 			dispatch(deleteCategoryStart());
 			const data = await deleteCategory(categoryId);
-			console.log(data);
 			dispatch(deleteCategorySuccess(data));
+			toast.success('Category deleted successfully');
+
+			// trigger data fetch
+			triggerFetchNewDataFromDB(dispatch);
 		} catch (error) {
 			const errorMessage =
 				error.message || 'create category failed';
 			dispatch(deleteCategoryFailure(errorMessage));
-			console.error(errorMessage);
+			toast.error(errorMessage);
 		}
 	};
 
@@ -46,9 +54,13 @@ const CategorySettings = () => {
 					parentCategoryId: parentCategory,
 				});
 				console.log(data);
-				await dispatch(createCategorySuccess(data));
+				dispatch(createCategorySuccess(data));
 				setNewCategory('');
 				setParentCategory('');
+
+				toast.success('category created successfully');
+				// trigger data fetch
+				triggerFetchNewDataFromDB(dispatch);
 			} else {
 				const data = await createCategory({
 					name: newCategory,
@@ -57,6 +69,9 @@ const CategorySettings = () => {
 				dispatch(createCategorySuccess(data));
 				setNewCategory('');
 				setParentCategory('');
+				toast.success('category created successfully');
+				// trigger data fetch
+				triggerFetchNewDataFromDB(dispatch);
 			}
 		} catch (error) {
 			const errorMessage =
@@ -67,7 +82,6 @@ const CategorySettings = () => {
 	};
 
 	if (loading) {
-		console.log('LOADING ... ', categories);
 		return <div>Loading.......</div>;
 	}
 	return (

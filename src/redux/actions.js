@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { backendUrl } from '../config';
+import { fetchNewData } from './fetchNewData';
 
 const registerUser = async (data) => {
 	try {
@@ -325,6 +326,10 @@ const logout = () => {
 	localStorage.removeItem('authToken');
 };
 
+const triggerFetchNewDataFromDB = (dispatch) => {
+	dispatch(fetchNewData());
+};
+
 export {
 	registerUser,
 	loginUser,
@@ -343,4 +348,5 @@ export {
 	addIncome,
 	fetchExpenses,
 	addExpense,
+	triggerFetchNewDataFromDB,
 };

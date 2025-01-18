@@ -4,12 +4,14 @@ import Aside from '../components/Aside';
 import ReusableFormLabel from '../reusableUIComponents/ReusableFormLabel';
 import ReusableFormInput from '../reusableUIComponents/ReusableFormInput';
 import { useState } from 'react';
-import { loginUser } from '../redux/actions';
-import { useSelector } from 'react-redux';
+import { loginUser, triggerFetchNewDataFromDB } from '../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
 	const [isLoading, setIsLoading] = useState(false);
+
+	const dispatch = useDispatch();
 
 	const { showNavLinkTexts } = useSelector(
 		(state) => state.navLinkTexts
@@ -42,6 +44,8 @@ const LoginPage = () => {
 			});
 
 			setIsLoading(false);
+
+			triggerFetchNewDataFromDB(dispatch);
 
 			navigate('/');
 		} catch (error) {

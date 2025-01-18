@@ -2,7 +2,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import Aside from '../components/Aside';
 import Navbar from '../components/Navbar';
 import { useState } from 'react';
-import { addIncome, addExpense } from '../redux/actions';
+import {
+	addIncome,
+	addExpense,
+	triggerFetchNewDataFromDB,
+} from '../redux/actions';
 
 import {
 	addIncomeSuccess,
@@ -58,6 +62,9 @@ const BudgetPage = () => {
 				duration: 3000,
 				position: 'top-right',
 			});
+
+			// trigger data fetch
+			triggerFetchNewDataFromDB(dispatch);
 		} catch (error) {
 			const errorMessage =
 				error.message || 'Failed to add income';
@@ -80,6 +87,9 @@ const BudgetPage = () => {
 				duration: 3000,
 				position: 'top-right',
 			});
+
+			// trigger data fetch
+			triggerFetchNewDataFromDB(dispatch);
 		} catch (error) {
 			const errorMessage =
 				error.message || 'Failed to add expense';

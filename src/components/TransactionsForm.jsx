@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useTable } from 'react-table';
@@ -188,55 +189,66 @@ const TransactionsForm = () => {
 				/>
 			</div>
 
-			<table
-				{...getTableProps()}
-				className="table-auto border-collapse w-full text-left text-sm p-6"
-			>
-				<thead>
-					{headerGroups.map((headerGroup) => (
-						<tr
-							key={headerGroup.id}
-							{...headerGroup.getHeaderGroupProps()}
-							className="bg-gray-100"
-						>
-							{headerGroup.headers.map((column) => (
-								<th
-									key={column.id}
-									{...column.getHeaderProps()}
-									className="border p-2"
-								>
-									{column.render('Header')}
-								</th>
-							))}
-						</tr>
-					))}
-				</thead>
-
-				<tbody {...getTableBodyProps()}>
-					{rows.map((row) => {
-						prepareRow(row);
-						return (
+			{data.length === 0 ? (
+				<p className="text-gray-600 text-center">
+					No transactions available at the moment.
+				</p>
+			) : (
+				<table
+					{...getTableProps()}
+					className="table-auto border-collapse w-full text-left text-sm p-6"
+				>
+					<thead>
+						{headerGroups.map((headerGroup) => (
 							<tr
-								key={row.id}
-								{...row.getRowProps()}
-								className="hover:bg-gray-200"
+								key={headerGroup.id}
+								{...headerGroup.getHeaderGroupProps()}
+								className="bg-gray-100"
 							>
-								{row.cells.map((cell) => (
-									<td
-										key={cell.column.id}
-										{...cell.getCellProps()}
+								{headerGroup.headers.map((column) => (
+									<th
+										key={column.id}
+										{...column.getHeaderProps()}
 										className="border p-2"
 									>
-										{cell.render('Cell')}
-									</td>
+										{column.render('Header')}
+									</th>
 								))}
 							</tr>
-						);
-					})}
-				</tbody>
-			</table>
+						))}
+					</thead>
+
+					<tbody {...getTableBodyProps()}>
+						{rows.map((row) => {
+							prepareRow(row);
+							return (
+								<tr
+									key={row.id}
+									{...row.getRowProps()}
+									className="hover:bg-gray-200"
+								>
+									{row.cells.map((cell) => (
+										<td
+											key={cell.column.id}
+											{...cell.getCellProps()}
+											className="border p-2"
+										>
+											{cell.render('Cell')}
+										</td>
+									))}
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+			)}
 		</div>
 	);
+};
+
+TransactionsForm.propTypes = {
+	row: PropTypes.object,
+	original: PropTypes.object,
 };
 
 export default TransactionsForm;

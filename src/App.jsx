@@ -22,6 +22,9 @@ import {
 function App() {
 	const dispatch = useDispatch();
 	const { user } = useSelector((state) => state.auth);
+	const { fetch } = useSelector((state) => state.fetch);
+
+	console.log('FETCH: ', fetch);
 
 	useEffect(() => {
 		callFetchCategoriesFunction(dispatch);
@@ -29,7 +32,7 @@ function App() {
 		callFetchAccountsFunction(dispatch);
 		callFetchExpenses(dispatch);
 		callFetchIncomes(dispatch);
-	}, [dispatch, user]);
+	}, [dispatch, user, fetch]);
 
 	const router = createBrowserRouter([
 		{

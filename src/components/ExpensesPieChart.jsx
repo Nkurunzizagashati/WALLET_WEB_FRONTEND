@@ -19,6 +19,7 @@ const ExpensesPieChart = () => {
 		(transaction) => transaction?.transactionType === 'Expense'
 	);
 	console.log('EXPENSES: ', expenses);
+
 	// Grouping expenses by category
 	const expensesByCategory = expenses?.reduce((acc, expense) => {
 		if (acc[expense?.categoryId?.name]) {
@@ -78,7 +79,16 @@ const ExpensesPieChart = () => {
 
 	return (
 		<div className="w-[100%] h-[100%]">
-			<Pie data={chartData} options={options} />
+			{expenses.length === 0 ? (
+				<div className="flex items-center justify-center h-full">
+					<p className="text-gray-500 text-lg">
+						No data available, in case you have expenses, a
+						chart of expenses by category will appear here
+					</p>
+				</div>
+			) : (
+				<Pie data={chartData} options={options} />
+			)}
 		</div>
 	);
 };
