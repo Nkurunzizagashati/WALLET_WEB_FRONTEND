@@ -1,46 +1,69 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { createTransaction } from '../redux/actions';
+import {
+	addTransactionFailure,
+	addTransactionStart,
+	addTransactionSuccess,
+} from '../redux/transactionSlice';
+import toast from 'react-hot-toast';
 
 const CreateTransactionForm = () => {
+	const { accounts } = useSelector((state) => state.accounts);
+
 	const { categories } = useSelector((state) => state.categories);
+	const { loading } = useSelector((state) => state.transactions);
+
+	const dispatch = useDispatch();
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [formData, setFormData] = useState({
 		amount: '',
-		account: '',
-		type: '',
-		category: '',
+		accountId: '',
+		transactionType: '',
+		categoryId: '',
 		date: '',
 		notes: '',
 	});
-
-	const accounts = ['Savings', 'Checking', 'Credit Card'];
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		// Add logic to handle form submission (e.g., API call)
-		console.log('Form Submitted:', formData);
-		setIsModalOpen(false); // Close modal after submission
-		setFormData({
-			amount: '',
-			account: '',
-			type: '',
-			category: '',
-			date: '',
-			notes: '',
-		});
+	const handleSubmit = async (e) => {
+		try {
+			e.preventDefault();
+			console.log('Form Submitted:', formData);
+
+			dispatch(addTransactionStart());
+
+			const response = await createTransaction(formData);
+			dispatch(addTransactionSuccess(response));
+			toast.success(response.message, {
+				duration: 2000,
+				position: 'top-right',
+			});
+
+			setIsModalOpen(false);
+			setFormData({
+				amount: '',
+				accountId: '',
+				transactionType: '',
+				categoryId: '',
+				date: '',
+				notes: '',
+			});
+		} catch (error) {
+			dispatch(addTransactionFailure(error.message));
+		}
 	};
 
 	return (
 		<div className="flex flex-col">
 			<button
 				onClick={() => setIsModalOpen(true)}
-				className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 self-end fixed top-[14%]"
+				className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-500 self-end fixed top-[14%]"
 			>
 				Add a New Transaction
 			</button>
@@ -54,12 +77,6 @@ const CreateTransactionForm = () => {
 						className="bg-white rounded-lg shadow-lg w-[600px] p-6 relative"
 						onClick={(e) => e.stopPropagation()}
 					>
-						<button
-							onClick={() => setIsModalOpen(false)}
-							className="absolute text-3xl font-bold text-red-600 top-4 right-4 hover:text-gray-700"
-						>
-							&times;
-						</button>
 						<h2 className="text-lg font-semibold mb-4">
 							New Transaction
 						</h2>
@@ -82,8 +99,8 @@ const CreateTransactionForm = () => {
 									Account
 								</label>
 								<select
-									name="account"
-									value={formData.account}
+									name="accountId"
+									value={formData.accountId}
 									onChange={handleInputChange}
 									className="w-full border rounded-md p-2"
 									required
@@ -94,20 +111,21 @@ const CreateTransactionForm = () => {
 									{accounts.map((account, index) => (
 										<option
 											key={index}
-											value={account}
+											value={account._id}
 										>
-											{account}
+											{account?.bankName} - (
+											{account?.accountType})
 										</option>
 									))}
 								</select>
 							</div>
 							<div className="mb-4">
 								<label className="block text-sm font-medium mb-1">
-									Type
+									Transaction Type
 								</label>
 								<select
-									name="type"
-									value={formData.type}
+									name="transactionType"
+									value={formData.transactionType}
 									onChange={handleInputChange}
 									className="w-full border rounded-md p-2"
 									required
@@ -128,8 +146,8 @@ const CreateTransactionForm = () => {
 									Category/Subcategory
 								</label>
 								<select
-									name="category"
-									value={formData.category}
+									name="categoryId"
+									value={formData.categoryId}
 									onChange={handleInputChange}
 									className="w-full border rounded-md p-2"
 									required
@@ -144,15 +162,15 @@ const CreateTransactionForm = () => {
 												value={category._id}
 											>
 												{category?.name}
-												{category.parentCategoryId &&
-													category.parentCategoryId !==
+												{category?.parentCategoryId &&
+													category?.parentCategoryId !==
 														null && (
 														<span className="text-gray-500">
 															{' '}
 															(
 															{
 																category
-																	.parentCategoryId
+																	?.parentCategoryId
 																	?.name
 															}
 															)
@@ -188,7 +206,7 @@ const CreateTransactionForm = () => {
 									rows="3"
 								/>
 							</div>
-							<div className="flex justify-end gap-2">
+							<div className="flex justify-between">
 								<button
 									type="button"
 									onClick={() =>
@@ -201,8 +219,11 @@ const CreateTransactionForm = () => {
 								<button
 									type="submit"
 									className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-500"
+									disabled={loading}
 								>
-									Add Transaction
+									{loading
+										? 'adding transaction ...'
+										: 'Add Transaction'}
 								</button>
 							</div>
 						</form>
