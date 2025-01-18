@@ -3,49 +3,42 @@ import { useSelector } from 'react-redux';
 import { useTable } from 'react-table';
 
 const TransactionsForm = () => {
-	// Retrieve transactions from Redux store
 	const { transactions } = useSelector((state) => state.transactions);
 
-	// Local state for filtering
-	const [filter, setFilter] = useState(''); // general filter
+	const [filter, setFilter] = useState('');
 	const [transactionType, setTransactionType] = useState('');
 	const [minAmount, setMinAmount] = useState('');
 	const [maxAmount, setMaxAmount] = useState('');
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
 
-	// Format transactions data for the table
 	const data = useMemo(() => {
 		return transactions
 			.filter((transaction) => {
-				// Filter by the general search term (fname, transactionType, date)
 				const matchesFilter =
-					transaction.userId.fname
+					transaction?.userId?.fname
 						.toLowerCase()
 						.includes(filter.toLowerCase()) ||
-					transaction.transactionType
-						.toLowerCase()
+					transaction?.transactionType
+						?.toLowerCase()
 						.includes(filter.toLowerCase()) ||
-					new Date(transaction.date)
+					new Date(transaction?.date)
 						.toLocaleDateString()
 						.includes(filter.toLowerCase());
 
-				// Filter by transaction type if selected
 				const matchesType = transactionType
-					? transaction.transactionType.toLowerCase() ===
+					? transaction?.transactionType.toLowerCase() ===
 					  transactionType.toLowerCase()
 					: true;
 
-				// Filter by amount range if set
 				const matchesAmount =
 					(minAmount
-						? transaction.amount >= minAmount
+						? transaction?.amount >= minAmount
 						: true) &&
 					(maxAmount
 						? transaction.amount <= maxAmount
 						: true);
 
-				// Filter by date range if set
 				const matchesDate =
 					(startDate
 						? new Date(transaction.date) >=
@@ -56,7 +49,6 @@ const TransactionsForm = () => {
 						  new Date(endDate)
 						: true);
 
-				// Return the transaction if it matches all filters
 				return (
 					matchesFilter &&
 					matchesType &&
@@ -65,11 +57,11 @@ const TransactionsForm = () => {
 				);
 			})
 			.map((transaction) => ({
-				id: transaction._id, // Unique key
-				date: new Date(transaction.date).toLocaleDateString(),
-				account: `${transaction.accountId.bankName} (${transaction.accountId.accountType})`,
-				amount: transaction.amount,
-				transactionType: transaction.transactionType,
+				id: transaction?._id,
+				date: new Date(transaction?.date).toLocaleDateString(),
+				account: `${transaction?.accountId?.bankName} (${transaction?.accountId?.accountType})`,
+				amount: transaction?.amount,
+				transactionType: transaction?.transactionType,
 			}));
 	}, [
 		transactions,
@@ -81,7 +73,6 @@ const TransactionsForm = () => {
 		endDate,
 	]);
 
-	// Define table columns
 	const columns = useMemo(
 		() => [
 			{
@@ -127,7 +118,6 @@ const TransactionsForm = () => {
 		[]
 	);
 
-	// Use react-table hooks
 	const {
 		getTableProps,
 		getTableBodyProps,
@@ -136,14 +126,11 @@ const TransactionsForm = () => {
 		prepareRow,
 	} = useTable({ columns, data });
 
-	// Handlers for delete and update actions
 	const handleDelete = (id) => {
-		// Handle the delete action
 		alert(`Deleted transaction with ID: ${id}`);
 	};
 
 	const handleUpdate = (id) => {
-		// Handle the update action
 		alert(`Update transaction with ID: ${id}`);
 	};
 
@@ -153,7 +140,6 @@ const TransactionsForm = () => {
 				Transactions
 			</h2>
 
-			{/* Filter inputs */}
 			<div className="mb-6">
 				<input
 					type="text"
@@ -163,7 +149,6 @@ const TransactionsForm = () => {
 					onChange={(e) => setFilter(e.target.value)}
 				/>
 
-				{/* Filter by transaction type */}
 				<select
 					className="p-2 border border-gray-300 rounded mr-2"
 					value={transactionType}
@@ -172,10 +157,8 @@ const TransactionsForm = () => {
 					<option value="">All Types</option>
 					<option value="Income">Income</option>
 					<option value="Expense">Expense</option>
-					{/* Add more transaction types as needed */}
 				</select>
 
-				{/* Filter by amount range */}
 				<input
 					type="number"
 					className="p-2 border border-gray-300 rounded mr-2"
@@ -191,7 +174,6 @@ const TransactionsForm = () => {
 					onChange={(e) => setMaxAmount(e.target.value)}
 				/>
 
-				{/* Filter by date range */}
 				<input
 					type="date"
 					className="p-2 border border-gray-300 rounded mr-2"
