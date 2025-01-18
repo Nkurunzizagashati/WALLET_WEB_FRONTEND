@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
 	callFetchAccountsFunction,
 	callFetchCategoriesFunction,
+	callFetchExpenses,
+	callFetchIncomes,
 	callFetchTransactionsFunction,
 } from './fetch';
 
@@ -25,6 +27,8 @@ function App() {
 		callFetchCategoriesFunction(dispatch);
 		callFetchTransactionsFunction(dispatch);
 		callFetchAccountsFunction(dispatch);
+		callFetchExpenses(dispatch);
+		callFetchIncomes(dispatch);
 	}, [dispatch, user]);
 
 	const router = createBrowserRouter([

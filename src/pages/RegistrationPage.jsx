@@ -1,25 +1,21 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Aside from '../components/Aside';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ReusableFormLabel from '../reusableUIComponents/ReusableFormLabel';
 import ReusableFormInput from '../reusableUIComponents/ReusableFormInput';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { registerUser } from '../redux/actions';
-import {
-	registerFailure,
-	registerSuccess,
-	registerStart,
-} from '../redux/authSlice';
+
 import toast from 'react-hot-toast';
 const RegistrationPage = () => {
 	const { showNavLinkTexts } = useSelector(
 		(state) => state.navLinkTexts
 	);
 
-	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
-	const { loading } = useSelector((state) => state.auth);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [formData, setFormData] = useState({
 		fname: '',
@@ -37,18 +33,21 @@ const RegistrationPage = () => {
 	const handleRegister = async (e) => {
 		e.preventDefault();
 		try {
-			dispatch(registerStart());
+			setIsLoading(true);
 			const data = await registerUser(formData);
 
 			localStorage.setItem('authToken', data.accessToken);
-			dispatch(registerSuccess(data));
 			toast.success(data.message, {
 				duration: 5000,
 				position: 'top-right',
 			});
+
+			navigate('/');
+
+			setIsLoading(false);
 		} catch (error) {
 			const errorMessage = error.message || 'Registration failed';
-			dispatch(registerFailure(errorMessage));
+			setIsLoading(false);
 			toast.error(errorMessage, {
 				duration: 5000,
 				position: 'top-right',
@@ -139,11 +138,12 @@ const RegistrationPage = () => {
 								</div>
 
 								<button
+									disabled={isLoading}
 									type="submit"
 									className="w-full py-2 bg-primary text-white rounded-md hover:bg-blue-600"
 								>
-									{loading
-										? 'Registering'
+									{isLoading
+										? 'Registering ...'
 										: 'Register'}
 								</button>
 							</form>

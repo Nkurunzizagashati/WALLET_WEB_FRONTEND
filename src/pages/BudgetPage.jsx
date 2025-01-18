@@ -23,9 +23,9 @@ const BudgetPage = () => {
 		(state) => state.navLinkTexts
 	);
 
-	const expenses = useSelector((state) => state.expenses.data || []);
-	const incomes = useSelector((state) => state.incomes.data || []);
 	const { categories } = useSelector((state) => state.categories);
+	const { expenses } = useSelector((state) => state.expenses);
+	const { incomes } = useSelector((state) => state.incomes);
 
 	const [newBudget, setNewBudget] = useState({
 		expense: '',
@@ -68,6 +68,9 @@ const BudgetPage = () => {
 			});
 		}
 	};
+
+	console.log('INCOMES: ', incomes);
+	console.log('EXPENSES: ', expenses);
 
 	const addNewExpense = async () => {
 		try {
@@ -158,7 +161,7 @@ const BudgetPage = () => {
 										key={index}
 										className="flex justify-between p-2 bg-gray-100 rounded"
 									>
-										<span>{income.source}</span>
+										<span>{income.income}</span>
 										<span>{income.amount} RWF</span>
 									</li>
 								))}
@@ -203,7 +206,7 @@ const BudgetPage = () => {
 										key={index}
 										value={category?._id}
 									>
-										{category?.name}
+										{category?.expense}
 									</option>
 								))}
 							</select>

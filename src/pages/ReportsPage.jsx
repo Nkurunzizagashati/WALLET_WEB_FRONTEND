@@ -9,20 +9,18 @@ const ReportsPage = () => {
 		(state) => state.navLinkTexts
 	);
 
-	const [reportType, setReportType] = useState('summary'); // Selected report type
-	const [reportData, setReportData] = useState(null); // Placeholder for fetched report data
+	const [reportType, setReportType] = useState('summary');
+	const [reportData, setReportData] = useState(null);
 
 	const handleReportChange = (type) => {
 		setReportType(type);
 
-		// Simulate fetching report data (Replace this with actual API call)
 		setReportData(
 			type === 'summary'
 				? {
 						title: 'Summary Report',
 						content: (
 							<div className="space-y-6">
-								{/* Transaction Summary */}
 								<div className="bg-white p-4 rounded shadow-md">
 									<h3 className="text-lg font-semibold text-dark-text">
 										Transaction Summary
@@ -47,7 +45,6 @@ const ReportsPage = () => {
 									</ul>
 								</div>
 
-								{/* Transaction Categories */}
 								<div className="bg-white p-4 rounded shadow-md">
 									<h3 className="text-lg font-semibold text-dark-text">
 										Transaction Categories
@@ -70,7 +67,6 @@ const ReportsPage = () => {
 									</ul>
 								</div>
 
-								{/* Budget Overview */}
 								<div className="bg-white p-4 rounded shadow-md">
 									<h3 className="text-lg font-semibold text-dark-text">
 										Budget Overview
@@ -106,7 +102,6 @@ const ReportsPage = () => {
 						title: 'Detailed Report',
 						content: (
 							<div className="space-y-6">
-								{/* Detailed Transactions */}
 								<div className="bg-white p-4 rounded shadow-md">
 									<h3 className="text-lg font-semibold text-dark-text">
 										Detailed Transactions
@@ -198,7 +193,6 @@ const ReportsPage = () => {
 						</button>
 					</div>
 
-					{/* Display the report data */}
 					{reportData ? (
 						<div className="space-y-8">
 							{reportData.content}

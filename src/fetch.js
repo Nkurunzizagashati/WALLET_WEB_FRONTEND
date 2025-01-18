@@ -34,7 +34,8 @@ const callFetchExpenses = async (dispatch) => {
 	try {
 		dispatch(fetchExpenseStart());
 		const data = await fetchIncomes();
-		dispatch(fetchExpenseSuccess(data));
+		dispatch(fetchExpenseSuccess(data.expenses));
+		console.log('IN THE FETCH FUNCTION: ', data);
 	} catch (error) {
 		fetchExpenseFailure(error.message);
 	}
@@ -42,9 +43,9 @@ const callFetchExpenses = async (dispatch) => {
 
 const callFetchIncomes = async (dispatch) => {
 	try {
-		fetchIncomeStart();
+		dispatch(fetchIncomeStart());
 		const data = await fetchIncomes();
-		dispatch(fetchIncomeSuccess(data.incomes));
+		dispatch(fetchIncomeSuccess(data.expenses));
 	} catch (error) {
 		dispatch(fetchIncomeFailure(error.message));
 	}

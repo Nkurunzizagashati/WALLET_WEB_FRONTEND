@@ -5,22 +5,15 @@ import ReusableFormLabel from '../reusableUIComponents/ReusableFormLabel';
 import ReusableFormInput from '../reusableUIComponents/ReusableFormInput';
 import { useState } from 'react';
 import { loginUser } from '../redux/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-	loginStart,
-	loginFailure,
-	loginSuccess,
-} from '../redux/authSlice';
+import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
-	const { loading } = useSelector((state) => state.auth);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const { showNavLinkTexts } = useSelector(
 		(state) => state.navLinkTexts
 	);
-
-	const dispatch = useDispatch();
 
 	const navigate = useNavigate();
 
@@ -38,7 +31,7 @@ const LoginPage = () => {
 		e.preventDefault();
 
 		try {
-			dispatch(loginStart());
+			setIsLoading(true);
 			const data = await loginUser(formData);
 
 			localStorage.setItem('authToken', data.accessToken);
@@ -48,25 +41,18 @@ const LoginPage = () => {
 				position: 'top-right',
 			});
 
-			dispatch(loginSuccess(data));
+			setIsLoading(false);
 
-			if (!loading) {
-				navigate('/');
-			}
+			navigate('/');
 		} catch (error) {
 			const errorMessage = error.message || 'Login failed';
-			dispatch(loginFailure(errorMessage));
+			setIsLoading(false);
 			toast.error(errorMessage, {
 				duration: 3000,
 				position: 'top-right',
 			});
 		}
 	};
-
-	console.log(
-		'Redux State:',
-		useSelector((state) => state.auth)
-	);
 
 	return (
 		<div className="h-screen ">
@@ -115,14 +101,13 @@ const LoginPage = () => {
 								</div>
 
 								<button
+									disabled={isLoading}
 									type="submit"
-									className={`w-full py-2 bg-primary text-white rounded-md hover:bg-blue-600 ${
-										loading
-											? 'disabled:cursor-not-allowed'
-											: ''
-									}`}
+									className={`w-full py-2 bg-primary text-white rounded-md hover:bg-blue-600 `}
 								>
-									{loading ? 'Loading ...' : 'Login'}
+									{isLoading
+										? 'Loading ...'
+										: 'Login'}
 								</button>
 							</form>
 							<div className="mt-6 text-center">
