@@ -174,6 +174,153 @@ const deleteAccount = async (accountId) => {
 	}
 };
 
+const createTransaction = async (data) => {
+	try {
+		const authToken = localStorage.getItem('authToken');
+		const response = await axios.post(
+			`${backendUrl}/transaction/create`,
+			data,
+			{
+				headers: {
+					authorization: `Bearer ${authToken}`,
+				},
+			}
+		);
+		return response.data;
+	} catch (error) {
+		if (error.response && error.response.data) {
+			throw error.response.data;
+		} else {
+			throw new Error('Network error or server not reachable');
+		}
+	}
+};
+
+const updateTransaction = async (transactionId, data) => {
+	try {
+		const authToken = localStorage.getItem('authToken');
+		const response = await axios.put(
+			`${backendUrl}/transaction/${transactionId}`,
+			data,
+			{
+				headers: {
+					authorization: `Bearer ${authToken}`,
+				},
+			}
+		);
+		return response.data;
+	} catch (error) {
+		if (error.response && error.response.data) {
+			throw error.response.data;
+		} else {
+			throw new Error('Network error or server not reachable');
+		}
+	}
+};
+
+const deleteTransaction = async (transactionId) => {
+	try {
+		const authToken = localStorage.getItem('authToken');
+		const response = await axios.delete(
+			`${backendUrl}/transaction/${transactionId}`,
+			{
+				headers: {
+					authorization: `Bearer ${authToken}`,
+				},
+			}
+		);
+		return response.data;
+	} catch (error) {
+		if (error.response && error.response.data) {
+			throw error.response.data;
+		} else {
+			throw new Error('Network error or server not reachable');
+		}
+	}
+};
+
+const fetchIncomes = async () => {
+	try {
+		const authToken = localStorage.getItem('authToken');
+		const response = await axios.get(`${backendUrl}/income`, {
+			headers: {
+				authorization: `Bearer ${authToken}`,
+			},
+		});
+		return response.data;
+	} catch (error) {
+		if (error.response && error.response.data) {
+			throw error.response.data;
+		} else {
+			throw new Error('Network error or server not reachable');
+		}
+	}
+};
+
+const addIncome = async (data) => {
+	try {
+		const authToken = localStorage.getItem('authToken');
+		const response = await axios.post(
+			`${backendUrl}/income/add`,
+			data,
+			{
+				headers: {
+					authorization: `Bearer ${authToken}`,
+				},
+			}
+		);
+
+		return response.data;
+	} catch (error) {
+		if (error.response && error.response.data) {
+			throw error.response.data;
+		} else {
+			throw new Error('Network error or server not reachable');
+		}
+	}
+};
+
+const fetchExpenses = async () => {
+	try {
+		const authToken = localStorage.getItem('authToken');
+		const response = await axios.get(`${backendUrl}/expense`, {
+			headers: {
+				authorization: `Bearer ${authToken}`,
+			},
+		});
+		return response.data;
+	} catch (error) {
+		if (error.response && error.response.data) {
+			throw error.response.data;
+		} else {
+			throw new Error('Network error or server not reachable');
+		}
+	}
+};
+
+const addExpense = async (data) => {
+	try {
+		const authToken = localStorage.getItem('authToken');
+		const response = await axios.post(
+			`${backendUrl}/expense/add`,
+			data,
+			{
+				headers: {
+					authorization: `Bearer ${authToken}`,
+				},
+			}
+		);
+
+		return response.data;
+	} catch (error) {
+		if (error.response && error.response.data) {
+			throw error.response.data;
+		} else {
+			throw new Error('Network error or server not reachable');
+		}
+	}
+};
+
 const logout = () => {
 	localStorage.removeItem('authToken');
 };
@@ -188,5 +335,12 @@ export {
 	fetchAccounts,
 	deleteAccount,
 	createAccount,
+	createTransaction,
+	updateTransaction,
+	deleteTransaction,
 	logout,
+	fetchIncomes,
+	addIncome,
+	fetchExpenses,
+	addExpense,
 };
