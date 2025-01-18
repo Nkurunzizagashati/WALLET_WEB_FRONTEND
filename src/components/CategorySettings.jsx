@@ -46,7 +46,7 @@ const CategorySettings = () => {
 					parentCategoryId: parentCategory,
 				});
 				console.log(data);
-				dispatch(createCategorySuccess(data));
+				await dispatch(createCategorySuccess(data));
 				setNewCategory('');
 				setParentCategory('');
 			} else {
@@ -67,6 +67,7 @@ const CategorySettings = () => {
 	};
 
 	if (loading) {
+		console.log('LOADING ... ', categories);
 		return <div>Loading.......</div>;
 	}
 	return (
@@ -83,12 +84,12 @@ const CategorySettings = () => {
 						<div className="flex justify-between items-center">
 							<span className="text-lg font-semibold">
 								{category?.name}
-								{category.parentCategoryId && (
+								{category?.parentCategoryId && (
 									<span className="text-gray-500">
 										{' '}
 										(
 										{
-											category.parentCategoryId
+											category?.parentCategoryId
 												?.name
 										}
 										)
@@ -100,7 +101,7 @@ const CategorySettings = () => {
 									className="text-blue-500 hover:text-blue-700 border border-blue-500 px-3 py-1 rounded-md hover:bg-blue-100"
 									onClick={() =>
 										handleUpdateCategory(
-											category._id
+											category?._id
 										)
 									}
 								>
@@ -110,7 +111,7 @@ const CategorySettings = () => {
 									className="text-red-500 hover:text-red-700 border border-red-500 px-3 py-1 rounded-md hover:bg-red-100"
 									onClick={() =>
 										handleDeleteCategory(
-											category._id
+											category?._id
 										)
 									}
 								>
@@ -139,15 +140,18 @@ const CategorySettings = () => {
 						Select Parent Category (Optional)
 					</option>
 					{categories.map((category) => (
-						<option key={category._id} value={category._id}>
+						<option
+							key={category?._id}
+							value={category?._id}
+						>
 							{category?.name}
-							{category.parentCategoryId &&
-								category.parentCategoryId !== null && (
+							{category?.parentCategoryId &&
+								category?.parentCategoryId !== null && (
 									<span className="text-gray-500">
 										{' '}
 										(
 										{
-											category.parentCategoryId
+											category?.parentCategoryId
 												?.name
 										}
 										)
