@@ -111,7 +111,7 @@ const CreateTransactionForm = () => {
 									{accounts.map((account, index) => (
 										<option
 											key={index}
-											value={account._id}
+											value={account?._id}
 										>
 											{account?.bankName} - (
 											{account?.accountType})

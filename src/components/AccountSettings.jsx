@@ -9,6 +9,7 @@ import {
 	deleteAccountStart,
 	deleteAccountSuccess,
 } from '../redux/accountSlice';
+import toast from 'react-hot-toast';
 
 const AccountSettings = () => {
 	const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const AccountSettings = () => {
 
 	const handleCreateAccount = async () => {
 		if (!bankName || !accountType) {
-			alert('Bank Name and Account Type are required.');
+			toast.error('Bank Name and Account Type are required.');
 			return;
 		}
 		const accountData = {
@@ -38,11 +39,11 @@ const AccountSettings = () => {
 			setBankName('');
 			setAccountType('');
 			setInitialBalance('');
-			alert('Account created successfully!');
+			toast.success('Account created successfully!');
 		} catch (error) {
 			dispatch(createAccountFailure(error.message));
 			console.error('Error creating account:', error);
-			alert(error.message || 'Failed to create account.');
+			toast.error(error.message || 'Failed to create account.');
 		}
 	};
 
@@ -59,11 +60,10 @@ const AccountSettings = () => {
 			dispatch(deleteAccountStart());
 			await deleteAccount(accountId);
 			dispatch(deleteAccountSuccess(accountId));
-			alert('Account deleted successfully!');
+			toast.success('Account deleted successfully!');
 		} catch (error) {
 			dispatch(deleteAccountFailure(error.message));
-			console.error('Error deleting account:', error);
-			alert(error.message || 'Failed to delete account.');
+			toast.error(error.message || 'Failed to delete account');
 		}
 	};
 
@@ -77,7 +77,6 @@ const AccountSettings = () => {
 				Manage Accounts
 			</h2>
 
-			{/* Display Existing Accounts */}
 			<ul className="list-disc pl-5 mb-4">
 				{accounts.map((account, index) => (
 					<li
@@ -108,7 +107,6 @@ const AccountSettings = () => {
 				))}
 			</ul>
 
-			{/* Form to Create New Account */}
 			<div className="flex flex-col gap-4">
 				<input
 					type="text"
