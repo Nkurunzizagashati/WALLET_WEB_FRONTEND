@@ -6,6 +6,10 @@ export default {
 			colors: {
 				'light-gray': '#F7F7F7',
 				dark: '#2C2C2C',
+				'dark-text': '#333333',
+				'silver-color': '#C0C0C0',
+				primary: '#4A90E2',
+				secondary: '#32CD32',
 			},
 			fontFamily: {
 				poppins: ['Poppins', 'sans-serif'],
