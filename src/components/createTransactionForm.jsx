@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const CreateTransactionForm = () => {
+	const { categories } = useSelector((state) => state.categories);
+
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [formData, setFormData] = useState({
 		amount: '',
@@ -12,12 +15,6 @@ const CreateTransactionForm = () => {
 	});
 
 	const accounts = ['Savings', 'Checking', 'Credit Card'];
-	const categories = [
-		'Food',
-		'Transport',
-		'Utilities',
-		'Entertainment',
-	];
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
@@ -43,7 +40,7 @@ const CreateTransactionForm = () => {
 		<div className="flex flex-col">
 			<button
 				onClick={() => setIsModalOpen(true)}
-				className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 self-end"
+				className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 self-end fixed top-[14%]"
 			>
 				Add a New Transaction
 			</button>
@@ -144,9 +141,23 @@ const CreateTransactionForm = () => {
 										(category, index) => (
 											<option
 												key={index}
-												value={category}
+												value={category._id}
 											>
-												{category}
+												{category?.name}
+												{category.parentCategoryId &&
+													category.parentCategoryId !==
+														null && (
+														<span className="text-gray-500">
+															{' '}
+															(
+															{
+																category
+																	.parentCategoryId
+																	?.name
+															}
+															)
+														</span>
+													)}
 											</option>
 										)
 									)}
@@ -189,7 +200,7 @@ const CreateTransactionForm = () => {
 								</button>
 								<button
 									type="submit"
-									className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+									className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-500"
 								>
 									Add Transaction
 								</button>
