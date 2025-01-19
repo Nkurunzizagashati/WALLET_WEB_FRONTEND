@@ -30,9 +30,9 @@ const LoginPage = () => {
 	});
 
 	const authToken = localStorage.getItem('authToken');
-	if (authToken) {
-		localStorage.removeItem('authToken');
-	}
+	// if (authToken) {
+	// 	localStorage.removeItem('authToken');
+	// }
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
