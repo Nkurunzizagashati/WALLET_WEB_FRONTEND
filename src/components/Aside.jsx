@@ -74,7 +74,9 @@ const Aside = ({ className }) => {
 						to={navItem.linkPath}
 						key={index}
 						onClick={
-							navItem.label === 'Logout' ? logout() : ''
+							navItem.label === 'Logout'
+								? () => logout()
+								: ''
 						}
 						className={({ isActive }) =>
 							`${
@@ -85,7 +87,7 @@ const Aside = ({ className }) => {
 								authToken ? '' : 'pointer-events-none'
 							} ${
 								navItem.linkPath === '/login'
-									? 'mt-6 pointer-events-auto'
+									? 'self-end pointer-events-auto'
 									: ''
 							} `
 						}
