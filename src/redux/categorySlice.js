@@ -54,7 +54,9 @@ const categoriesSlice = createSlice({
 			state.loading = false;
 			state.message = action.payload.message;
 			state.categories = state.categories.filter(
-				(category) => category._id !== action.payload.categoryId
+				(category) =>
+					category._id !== action.payload._id &&
+					category.parentCategoryId !== action.payload._id
 			);
 		},
 		deleteCategoryFailure: (state, action) => {
@@ -71,6 +73,9 @@ export const {
 	createCategoryFailure,
 	createCategoryStart,
 	createCategorySuccess,
+	deleteCategoryFailure,
+	deleteCategoryStart,
+	deleteCategorySuccess,
 } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;
