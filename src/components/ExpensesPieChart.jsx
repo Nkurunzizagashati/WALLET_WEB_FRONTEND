@@ -76,7 +76,7 @@ const ExpensesPieChart = () => {
 	};
 
 	return (
-		<div className="w-[70%] h-[70%]">
+		<div className="w-[100%] h-[100%]">
 			<Pie data={chartData} options={options} />
 		</div>
 	);
