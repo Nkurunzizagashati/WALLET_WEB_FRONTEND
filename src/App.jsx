@@ -9,7 +9,11 @@ import SettingsPage from './pages/SettingsPage';
 import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
 import { useEffect } from 'react';
-import { fetchCategories, fetchTransactions } from './redux/actions';
+import {
+	fetchAccounts,
+	fetchCategories,
+	fetchTransactions,
+} from './redux/actions';
 import {
 	fetchCategoriesSuccess,
 	fetchCategoriesFailure,
@@ -21,6 +25,11 @@ import {
 	fetchTransactionsStart,
 	fetchTransactionsSuccess,
 } from './redux/transactionSlice';
+import {
+	fetchAccountsFailure,
+	fetchAccountsStart,
+	fetchAccountsSuccess,
+} from './redux/accountSlice';
 
 function App() {
 	const dispatch = useDispatch();
@@ -31,9 +40,6 @@ function App() {
 			try {
 				fetchCategoriesStart();
 				const data = await fetchCategories();
-				console.log(data.categories);
-				console.log(typeof data.categories);
-				console.log(typeof data.category);
 				dispatch(fetchCategoriesSuccess(data.categories));
 			} catch (error) {
 				dispatch(fetchCategoriesFailure(error.message));
@@ -44,17 +50,27 @@ function App() {
 			try {
 				dispatch(fetchTransactionsStart());
 				const data = await fetchTransactions();
-				console.log(data);
-				console.log(Array.isArray(data));
 
-				dispatch(fetchTransactionsSuccess(data));
+				dispatch(fetchTransactionsSuccess(data.transactions));
 			} catch (error) {
 				dispatch(fetchTransactionsFailure(error.message));
 			}
 		};
 
+		const callFetchAccountsFunction = async () => {
+			try {
+				dispatch(fetchAccountsStart());
+				const data = await fetchAccounts();
+				dispatch(fetchAccountsSuccess(data.accounts));
+				console.log(data.accounts);
+			} catch (error) {
+				dispatch(fetchAccountsFailure(error.message));
+			}
+		};
+
 		callFetchCategoriesFunction();
 		callFetchTransactionsFunction();
+		callFetchAccountsFunction();
 	}, [dispatch, user]);
 
 	const router = createBrowserRouter([
