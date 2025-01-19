@@ -11,6 +11,7 @@ import {
 	registerSuccess,
 	registerStart,
 } from '../redux/authSlice';
+import toast from 'react-hot-toast';
 const RegistrationPage = () => {
 	const { showNavLinkTexts } = useSelector(
 		(state) => state.navLinkTexts
@@ -18,13 +19,7 @@ const RegistrationPage = () => {
 
 	const dispatch = useDispatch();
 
-	const { message, error, token, loading } = useSelector(
-		(store) => store.auth
-	);
-
-	console.log(
-		`Message: ${message}, error: ${error}, Loading: ${loading},token: ${token}`
-	);
+	const { loading } = useSelector((state) => state.auth);
 
 	const [formData, setFormData] = useState({
 		fname: '',
@@ -47,10 +42,17 @@ const RegistrationPage = () => {
 
 			localStorage.setItem('authToken', data.accessToken);
 			dispatch(registerSuccess(data));
+			toast.success(data.message, {
+				duration: 5000,
+				position: 'top-right',
+			});
 		} catch (error) {
 			const errorMessage = error.message || 'Registration failed';
 			dispatch(registerFailure(errorMessage));
-			console.error(errorMessage);
+			toast.error(errorMessage, {
+				duration: 5000,
+				position: 'top-right',
+			});
 		}
 	};
 
@@ -140,7 +142,9 @@ const RegistrationPage = () => {
 									type="submit"
 									className="w-full py-2 bg-primary text-white rounded-md hover:bg-blue-600"
 								>
-									Register
+									{loading
+										? 'Registering'
+										: 'Register'}
 								</button>
 							</form>
 
