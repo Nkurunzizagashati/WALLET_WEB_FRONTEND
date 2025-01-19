@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Aside from '../components/Aside';
 import ReusableFormLabel from '../reusableUIComponents/ReusableFormLabel';
@@ -11,18 +11,28 @@ import {
 	loginFailure,
 	loginSuccess,
 } from '../redux/authSlice';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
+	const { loading } = useSelector((state) => state.auth);
+
 	const { showNavLinkTexts } = useSelector(
 		(state) => state.navLinkTexts
 	);
 
 	const dispatch = useDispatch();
 
+	const navigate = useNavigate();
+
 	const [formData, setFormData] = useState({
 		email: '',
 		password: '',
 	});
+
+	const authToken = localStorage.getItem('authToken');
+	if (authToken) {
+		localStorage.removeItem('authToken');
+	}
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -38,11 +48,23 @@ const LoginPage = () => {
 
 			localStorage.setItem('authToken', data.accessToken);
 
+			toast.success(data.message, {
+				duration: 3000,
+				position: 'top-right',
+			});
+
 			dispatch(loginSuccess(data));
+
+			if (!loading) {
+				navigate('/');
+			}
 		} catch (error) {
 			const errorMessage = error.message || 'Login failed';
 			dispatch(loginFailure(errorMessage));
-			console.error(errorMessage);
+			toast.error(errorMessage, {
+				duration: 3000,
+				position: 'top-right',
+			});
 		}
 	};
 
@@ -99,9 +121,13 @@ const LoginPage = () => {
 
 								<button
 									type="submit"
-									className="w-full py-2 bg-primary text-white rounded-md hover:bg-blue-600"
+									className={`w-full py-2 bg-primary text-white rounded-md hover:bg-blue-600 ${
+										loading
+											? 'disabled:cursor-not-allowed'
+											: ''
+									}`}
 								>
-									Login
+									{loading ? 'Loading ...' : 'Login'}
 								</button>
 							</form>
 							<div className="mt-6 text-center">
