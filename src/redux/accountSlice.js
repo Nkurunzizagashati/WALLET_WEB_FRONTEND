@@ -34,10 +34,7 @@ const accountSlice = createSlice({
 		createAccountSuccess: (state, action) => {
 			state.loading = false;
 			state.message = action.payload.message;
-			state.accounts = [
-				...state.accounts,
-				action.payload.account,
-			];
+			state.accounts = [...state.accounts, action.payload];
 		},
 		createAccountFailure: (state, action) => {
 			state.loading = false;
