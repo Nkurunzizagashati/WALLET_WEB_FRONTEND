@@ -7,10 +7,15 @@ import { IoSettingsOutline } from 'react-icons/io5';
 import { MdLogin } from 'react-icons/md';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const Aside = ({ className }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
+
+	const { showNavLinkTexts } = useSelector(
+		(state) => state.navLinkTexts
+	);
 
 	const authToken = localStorage.getItem('authToken');
 
@@ -82,7 +87,13 @@ const Aside = ({ className }) => {
 						}
 					>
 						{navItem.icon}
-						<p className="">{navItem.label}</p>
+						<p
+							className={`${
+								showNavLinkTexts ? '' : 'hidden'
+							}`}
+						>
+							{navItem.label}
+						</p>
 					</NavLink>
 				))}
 			</div>
@@ -96,7 +107,9 @@ const Aside = ({ className }) => {
 				}
 			>
 				<IoSettingsOutline className="text-3xl" />
-				<p className="">Settings</p>
+				<p className={`${showNavLinkTexts ? '' : 'hidden'}`}>
+					Settings
+				</p>
 			</NavLink>
 		</aside>
 	);
