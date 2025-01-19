@@ -58,7 +58,7 @@ const Aside = ({ className }) => {
 		},
 		{
 			icon: <MdLogin className="text-3xl cursor-pointer" />,
-			label: 'Login',
+			label: authToken ? 'Logout' : 'Login',
 			linkPath: '/login',
 		},
 	];
@@ -103,7 +103,9 @@ const Aside = ({ className }) => {
 				className={({ isActive }) =>
 					`${
 						isActive ? 'bg-primary text-light-gray' : ''
-					} flex gap-4 cursor-pointer items-center w-full py-2 hover:bg-primary hover:text-light-gray rounded-xl`
+					} flex gap-4 cursor-pointer items-center w-full py-2 hover:bg-primary hover:text-light-gray rounded-xl ${
+						authToken ? '' : 'pointer-events-none'
+					}`
 				}
 			>
 				<IoSettingsOutline className="text-3xl" />
