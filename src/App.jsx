@@ -1,6 +1,5 @@
 import './App.css';
 import HomePage from './pages/HomePage';
-import CategoryPage from './pages/CategoriesPage';
 import BudgetPage from './pages/BudgetPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import TransactionsPage from './pages/TransactionsPage';
@@ -77,10 +76,6 @@ function App() {
 		{
 			path: '/',
 			element: <HomePage />,
-		},
-		{
-			path: '/categories',
-			element: <CategoryPage />,
 		},
 		{
 			path: '/budget',
