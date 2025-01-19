@@ -8,6 +8,7 @@ import { MdLogin } from 'react-icons/md';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { logout } from '../redux/actions';
 
 const Aside = ({ className }) => {
 	const navigate = useNavigate();
@@ -72,6 +73,9 @@ const Aside = ({ className }) => {
 					<NavLink
 						to={navItem.linkPath}
 						key={index}
+						onClick={
+							navItem.label === 'Logout' ? logout() : ''
+						}
 						className={({ isActive }) =>
 							`${
 								isActive

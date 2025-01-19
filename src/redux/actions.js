@@ -174,6 +174,10 @@ const deleteAccount = async (accountId) => {
 	}
 };
 
+const logout = () => {
+	localStorage.removeItem('authToken');
+};
+
 export {
 	registerUser,
 	loginUser,
@@ -184,4 +188,5 @@ export {
 	fetchAccounts,
 	deleteAccount,
 	createAccount,
+	logout,
 };
